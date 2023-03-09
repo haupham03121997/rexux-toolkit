@@ -12,6 +12,8 @@
         "@types/react": "^18.0.28",
         "@types/react-dom": "^18.0.11",
         "autoprefixer": "^10.4.13",
+        "axios": "^1.3.4",
+        "json-server": "^0.17.2",
         "postcss": "^8.4.21",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
@@ -49,6 +51,8 @@
         ]
     },
     "devDependencies": {
+        "@jridgewell/sourcemap-codec": "^1.4.14",
+        "@rollup/plugin-terser": "^0.4.0",
         "@svgr/core": "^6.5.1",
         "@svgr/plugin-svgo": "^6.5.1",
         "css-select": "^5.1.0",
@@ -56,9 +60,19 @@
         "eslint-plugin-prettier": "^4.2.1",
         "prettier": "^2.8.4",
         "prettier-plugin-tailwindcss": "^0.2.3",
-        "react-router-dom": "^6.8.1",
+        "react-router-dom": "^6.8.2",
         "react-scripts": "^5.0.1",
         "svgo": "^3.0.2",
         "user-agent-data-types": "^0.3.0"
+    },
+    "overrides": {
+        "@svgr/core": {
+            "dependencies": {
+                "css-select": "^5.1.0"
+            }
+        },
+        "svgo": "^3.0.2",
+        "sourcemap-codec": "@jridgewell/sourcemap-codec",
+        "rollup-plugin-terser": "@rollup/plugin-terser"
     }
 }

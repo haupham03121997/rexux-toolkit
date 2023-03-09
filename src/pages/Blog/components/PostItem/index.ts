@@ -1,3 +1,3 @@
-import PostItem from "./PostItem";
+import PostItem from './PostItem'
 
 export default PostItem

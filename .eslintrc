@@ -13,7 +13,8 @@
                 "useTabs": false,
                 "singleQuote": true,
                 "printWidth": 120,
-                "jsxSingleQuote": true
+                "jsxSingleQuote": true,
+                "@typescript-eslint/no-explicit-any": "error"
             }
         ]
     }

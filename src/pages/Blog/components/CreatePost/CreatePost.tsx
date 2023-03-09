@@ -1,20 +1,31 @@
-import { addPost, cancelEditingPost, finishEditingPost } from 'pages/Blog/blog.reducer'
+import { cancelEditingPost } from 'pages/Blog/blog.slice'
+import { useAddPostMutation, useGetPostByIdQuery, useUpdatePostMutation } from 'pages/Blog/blogRTK.service'
 import React, { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'redux/store'
 import { Post } from 'type/blog.type'
-const initialState: Post = {
+
+const initialState: Omit<Post, 'id'> = {
     title: '',
-    id: '',
     featuredImage: '',
     description: '',
     publishDate: '',
     published: false
 }
+
+type ErrorForm = {
+    // [key in keyof Omit<Post, 'id'>]: string, // Cách để lấy tất cả các key của Post
+    [key in keyof typeof initialState]: string
+}
+
 export default function CreatePost() {
     const dispatch = useDispatch<AppDispatch>()
-    const [formData, setFormData] = useState<Post>(initialState)
-    const editingPost = useSelector((state: RootState) => state.blog.editingPost)
+    const [formData, setFormData] = useState<Omit<Post, 'id'>>(initialState)
+    const postId = useSelector((state: RootState) => state.blogRTK.postId)
+
+    const [addPostMutate] = useAddPostMutation()
+    const [updatePostMutate, updatePostResult] = useUpdatePostMutation()
+    const { data: post } = useGetPostByIdQuery(postId, { skip: !postId })
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value, name } = event.target
@@ -22,22 +33,26 @@ export default function CreatePost() {
     }
 
     useEffect(() => {
-        setFormData(editingPost || initialState)
-    }, [editingPost])
+        if (post) setFormData(post)
+    }, [post])
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        if (editingPost) {
-            return dispatch(finishEditingPost(formData))
+        if (postId) {
+            await updatePostMutate({ id: postId, body: formData as Post }).unwrap()
+        } else {
+            addPostMutate(formData).then((res) => {
+                console.log('res', res)
+            })
         }
-        const formDataWithId = { ...formData, id: new Date().toISOString() }
-        dispatch(addPost(formDataWithId))
         setFormData(initialState)
     }
 
     const handleCancel = () => {
         dispatch(cancelEditingPost())
     }
+
+    const handleChange = (param1: any, param2: any) => {}
 
     return (
         <form onSubmit={handleSubmit} onReset={handleCancel}>
@@ -129,7 +144,7 @@ export default function CreatePost() {
                 </label>
             </div>
 
-            {editingPost && (
+            {postId && (
                 <Fragment>
                     <button
                         type='submit'
@@ -150,7 +165,7 @@ export default function CreatePost() {
                 </Fragment>
             )}
 
-            {!editingPost && (
+            {!postId && (
                 <button
                     className='group relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 p-0.5 text-sm font-medium text-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300 group-hover:from-purple-600 group-hover:to-blue-500 dark:text-white dark:focus:ring-blue-800'
                     type='submit'
