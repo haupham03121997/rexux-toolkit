@@ -1,5 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Post } from 'type/blog.type';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { Post } from 'type/blog.type'
 
 export const blogRTKApi = createApi({
     reducerPath: 'blogRTKApi',
@@ -28,11 +28,13 @@ export const blogRTKApi = createApi({
             query: (id) => `post/${id}`
         }),
         updatePost: builder.mutation<Post, { id: string; body: Post }>({
-            query: ({ id, body }) => ({
-                url: `post/${id}`,
-                method: 'PUT',
-                body
-            })
+            query: ({ id, body }) => {
+                return {
+                    url: `post/${id}`,
+                    method: 'PUT',
+                    body
+                }
+            }
         }),
         deletePost: builder.mutation<{}, string>({
             query: (id) => ({

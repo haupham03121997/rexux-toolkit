@@ -3,7 +3,9 @@ import { setupListeners } from '@reduxjs/toolkit/dist/query'
 import blogReducer from 'pages/Blog/blog.slice'
 import { blogRTKApi } from 'pages/Blog/blogRTK.service'
 import blogRTKReducer from 'pages/Blog/blogTRK.slice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, GetProps } from 'react-redux'
+import { rtkQueryErrorLogger } from 'utils/middleware'
+
 export const store = configureStore({
     reducer: {
         blog: blogReducer,
@@ -11,7 +13,7 @@ export const store = configureStore({
         [blogRTKApi.reducerPath]: blogRTKApi.reducer
     },
     middleware: (getDefaultMiddleware) => {
-        return getDefaultMiddleware().concat(blogRTKApi.middleware)
+        return getDefaultMiddleware().concat(blogRTKApi.middleware, rtkQueryErrorLogger)
     }
 })
 
